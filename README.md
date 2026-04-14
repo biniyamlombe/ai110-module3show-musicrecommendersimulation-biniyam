@@ -42,6 +42,29 @@ flowchart TD
 **Potential Biases & Limitations:**
 This algorithm heavily prioritizes exact genre matches (+2.0 points). As a result, it has a built-in bias toward a user's *stated* favorite genre. It might ignore a fantastic, perfectly mood-matched and energy-matched song simply because it falls into a different genre. It also assumes our numerical metrics (like `energy`) perfectly capture a user's intent, which isn't always true in the real world. Ensure you experiment with these weights when fine-tuning the system!
 
+**Simulation Output Screenshot:**
+
+```text
+Loaded songs: 18
+
+Top recommendations:
+
+Sunrise City - Score: 3.98
+Because: genre match (+2.0), mood match (+1.0), energy match (+0.98)
+
+Gym Hero - Score: 2.87
+Because: genre match (+2.0), energy match (+0.87)
+
+Rooftop Lights - Score: 1.96
+Because: mood match (+1.0), energy match (+0.96)
+
+Reggae Vibes - Score: 1.80
+Because: mood match (+1.0), energy match (+0.80)
+
+Deep House Groove - Score: 0.95
+Because: energy match (+0.95)
+```
+
 ---
 
 ## Getting Started
