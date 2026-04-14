@@ -61,29 +61,15 @@ Prompts:
 
 ## 6. Limitations and Bias 
 
-Where the system struggles or behaves unfairly. 
-
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+One major weakness I discovered during my experiments is "Filter Bubbling" caused by feature weight imbalances. When I tested an "Adversarial" user who requested happy music with extremely low energy but demanded the Metal genre, the system completely ignored the only Metal song in the catalog. Because I had experimentally doubled the weight of the Numerical features (Energy/Valence), the model prioritized mathematically perfect but culturally irrelevant tracks (like Reggae!) over imperfect songs in the requested genre. This creates a bias where the system heavily discriminates against genres that don't conform to strict mathematical boundaries.
 
 ---
 
 ## 7. Evaluation  
 
-How you checked whether the recommender behaved as expected. 
+I systematically tested the recommender using three diverse profiles: "High-Energy Pop", "Chill Lofi", and an adversarial rule-breaking "Adversarial Metal" profile (requesting intense metal but with extremely low energy/high valence parameters).
 
-Prompts:  
-
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
-
-No need for numeric metrics unless you created some.
+When comparing the Pop profile vs the Lofi profile, the outputs behaved perfectly—the system easily separated high-energy vibrant tracks from low-energy relaxing ones. However, what surprised me was the result from the adversarial test. The system ranked a Reggae song as the best Heavy Metal recommendation strictly because the underlying numbers matched our math formula. This proved that purely math-based systems can sometimes fail the "human intuition" test if weights are not properly balanced!
 
 ---
 
