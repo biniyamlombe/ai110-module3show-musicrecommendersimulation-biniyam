@@ -11,23 +11,23 @@ Your goal is to:
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
 
-Replace this paragraph with your own summary of what your version does.
+This simulation implements a basic **Content-Based Filtering** recommendation engine. It takes a user's taste profile and calculates a "vibe match" score by comparing their preferences directly against the audio attributes of each available song, allowing us to generate personalized music suggestions.
 
 ---
 
 ## How The System Works
 
-Explain your design in plain language.
+In the real world, music platforms like Spotify or YouTube use a mix of **Collaborative Filtering** (matching you with users who have similar tastes based on playback history) and **Content-Based Filtering** (matching songs with similar audio properties). This simulation prioritizes the **Content-Based Filtering** approach. We don't have simulated other users' listening histories, so we rely entirely on the songs' intrinsic characteristics to make predictions.
 
-Some prompts to answer:
+**Data & Features Used:**
+- **Song Features:** `genre` (e.g., pop, lofi), `mood` (e.g., happy, chill), `energy` (0.0 to 1.0 scale), and `valence` (musical positiveness, 0.0 to 1.0).
+- **UserProfile Information:** Stores the user's preferred `genre`, `mood`, target `energy`, and target `valence`.
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
-
-You can include a simple diagram or bullet list if helpful.
+**The Algorithm (Scoring & Ranking):**
+1. **Scoring Rule:** The recommender calculates a total score for *each individual song*. 
+   - Categorical traits (`genre`, `mood`) get fixed bonus points if they match the user exactly. We apply **weights** here (e.g., matching genre = +2.0 points, matching mood = +1.0 point), since returning the corresponding genre is typically the strongest indicator of a good match.
+   - Numerical traits (`energy`, `valence`) use a mathematical distance metric: `1.0 - absolute(user_preference - song_attribute)`. The closer the song is to the user's target, the more points it earns (up to +1.0 point each).
+2. **Ranking Rule:** After scoring every song in the catalog, the system sorts them by total score in descending order and recommends the top highest-scoring tracks.
 
 ---
 
