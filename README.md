@@ -29,6 +29,19 @@ In the real world, music platforms like Spotify or YouTube use a mix of **Collab
    - Numerical traits (`energy`, `valence`) use a mathematical distance metric: `1.0 - absolute(user_preference - song_attribute)`. The closer the song is to the user's target, the more points it earns (up to +1.0 point each).
 2. **Ranking Rule:** After scoring every song in the catalog, the system sorts them by total score in descending order and recommends the top highest-scoring tracks.
 
+**Data Flow Visualization:**
+
+```mermaid
+flowchart TD
+    A[User Profile] --> C(Scoring Logic Loop)
+    B[songs.csv Catalog] --> C
+    C -->|Calculates Score for Each Song| D{Sort Descending}
+    D --> E[Top K Recommendations]
+```
+
+**Potential Biases & Limitations:**
+This algorithm heavily prioritizes exact genre matches (+2.0 points). As a result, it has a built-in bias toward a user's *stated* favorite genre. It might ignore a fantastic, perfectly mood-matched and energy-matched song simply because it falls into a different genre. It also assumes our numerical metrics (like `energy`) perfectly capture a user's intent, which isn't always true in the real world. Ensure you experiment with these weights when fine-tuning the system!
+
 ---
 
 ## Getting Started
