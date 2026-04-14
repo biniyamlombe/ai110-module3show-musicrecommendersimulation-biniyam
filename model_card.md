@@ -16,14 +16,16 @@ This recommender is designed to generate customized music playlist suggestions b
 
 The algorithm uses a "Content-Based Filtering" methodology. Rather than looking at what other users listen to, it calculates a numerical score for every single song in our catalog by comparing the user's requested features directly against the song's features. 
 - A song earns a massive bonus score (+1.0 point) if it hits the exact requested genre or mood string.
-- Numerical traits like "energy" and "valence" use a math-based distance calculation. If a user asks for an energy of 0.8 and the song is 0.8, it earns the maximum points. The further away the song's energy is from the user's preference, the fewer points it earns.
+- **Advanced String matching:** A song earns +1.5 points for matching a highly specific `detailed_mood` string and +1.0 for matching the explicit `release_decade`.
+- **Numerical traits** like "energy", "valence", "vocal_presence", "instrumentalness", and "popularity" use a math-based distance calculation. If a user asks for an energy of 0.8 and the song is 0.8, it earns the maximum points. The further away the song's data is from the user's preference, the fewer points it earns.
 Finally, the system ranks all the songs based on total score and returns the top 5!
 
 ---
 
 ## 4. Data  
 
-Our dataset (`data/songs.csv`) contains a very small, manually curated catalog of exactly 18 songs. I expanded the original dataset to include wilder outliers like "Heavy Metal" and "Cyberpunk" across diverse tempos and valences. 
+Our dataset (`data/songs.csv`) contains a curated catalog of exactly 18 songs. I expanded the original dataset to include wilder outliers like "Heavy Metal" and "Cyberpunk" across diverse tempos and valences. 
+I also completed **Challenge 1**, upgrading the table by adding 5 advanced columns of data per song: `popularity`, `release_decade`, `detailed_mood`, `vocal_presence`, and `instrumentalness`.
 A major limitation of this data is its size—with only 18 tracks representing the entirety of world music, the algorithm is forced to recommend wildly mismatched songs to users simply because there aren't enough exact matches in the catalog.
 
 ---

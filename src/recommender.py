@@ -61,6 +61,10 @@ def load_songs(csv_path: str) -> List[Dict]:
             row['valence'] = float(row['valence'])
             row['danceability'] = float(row['danceability'])
             row['acousticness'] = float(row['acousticness'])
+            row['popularity'] = int(row['popularity'])
+            row['release_decade'] = int(row['release_decade'])
+            row['vocal_presence'] = float(row['vocal_presence'])
+            row['instrumentalness'] = float(row['instrumentalness'])
             songs.append(row)
     print(f"Loaded songs: {len(songs)}")
     return songs
@@ -81,6 +85,30 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
         score += 1.0
         reasons.append("mood match (+1.0)")
         
+    if 'detailed_mood' in user_prefs and song['detailed_mood'] == user_prefs['detailed_mood']:
+        score += 1.5
+        reasons.append("detailed mood match (+1.5)")
+
+    if 'release_decade' in user_prefs and song['release_decade'] == user_prefs['release_decade']:
+        score += 1.0
+        reasons.append(f"{song['release_decade']}s era match (+1.0)")
+
+    if 'target_popularity' in user_prefs:
+        pop_diff = abs(user_prefs['target_popularity'] - song['popularity']) / 100.0
+        pop_score = max(0.0, 1.0 - pop_diff)
+        score += pop_score
+        reasons.append(f"popularity match (+{pop_score:.2f})")
+
+    if 'vocal_presence' in user_prefs:
+        vocal_score = max(0.0, 1.0 - abs(user_prefs['vocal_presence'] - song['vocal_presence']))
+        score += vocal_score
+        reasons.append(f"vocal match (+{vocal_score:.2f})")
+
+    if 'instrumentalness' in user_prefs:
+        inst_score = max(0.0, 1.0 - abs(user_prefs['instrumentalness'] - song['instrumentalness']))
+        score += inst_score
+        reasons.append(f"instrumentalness match (+{inst_score:.2f})")
+
     if 'energy' in user_prefs:
         energy_score = 2.0 * max(0.0, 1.0 - abs(user_prefs['energy'] - song['energy'])) # EXP: Doubled weight
         score += energy_score

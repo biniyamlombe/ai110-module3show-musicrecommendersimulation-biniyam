@@ -20,13 +20,13 @@ This simulation implements a basic **Content-Based Filtering** recommendation en
 In the real world, music platforms like Spotify or YouTube use a mix of **Collaborative Filtering** (matching you with users who have similar tastes based on playback history) and **Content-Based Filtering** (matching songs with similar audio properties). This simulation prioritizes the **Content-Based Filtering** approach. We don't have simulated other users' listening histories, so we rely entirely on the songs' intrinsic characteristics to make predictions.
 
 **Data & Features Used:**
-- **Song Features:** `genre` (e.g., pop, lofi), `mood` (e.g., happy, chill), `energy` (0.0 to 1.0 scale), and `valence` (musical positiveness, 0.0 to 1.0).
-- **UserProfile Information:** Stores the user's preferred `genre`, `mood`, target `energy`, and target `valence`.
+- **Song Features:** We utilize 9 core traits! `genre`, `mood`, `energy`, `valence`, plus 5 Challenge Features (`popularity`, `release_decade`, `detailed_mood`, `vocal_presence`, and `instrumentalness`).
+- **UserProfile Information:** Stores the user's preferred values for all 9 traits so the system has a complete musical mapping of their intent.
 
 **The Algorithm (Scoring & Ranking):**
 1. **Scoring Rule:** The recommender calculates a total score for *each individual song*. 
-   - Categorical traits (`genre`, `mood`) get fixed bonus points if they match the user exactly. We apply **weights** here (e.g., matching genre = +2.0 points, matching mood = +1.0 point), since returning the corresponding genre is typically the strongest indicator of a good match.
-   - Numerical traits (`energy`, `valence`) use a mathematical distance metric: `1.0 - absolute(user_preference - song_attribute)`. The closer the song is to the user's target, the more points it earns (up to +1.0 point each).
+   - Categorical traits (`genre`, `mood`, `detailed_mood`, `release_decade`) get heavily weighted bonus points if they match the user exactly (e.g., matching a highly specific `detailed_mood` = +1.5 points).
+   - Numerical traits (`energy`, `valence`, `popularity`, etc.) use a mathematical distance metric: `1.0 - absolute(user_preference - song_attribute)`. The closer the song is to the user's target math, the more points it earns!
 2. **Ranking Rule:** After scoring every song in the catalog, the system sorts them by total score in descending order and recommends the top highest-scoring tracks.
 
 **Data Flow Visualization:**
@@ -40,7 +40,7 @@ flowchart TD
 ```
 
 **Potential Biases & Limitations:**
-This algorithm heavily prioritizes exact genre matches (+2.0 points). As a result, it has a built-in bias toward a user's *stated* favorite genre. It might ignore a fantastic, perfectly mood-matched and energy-matched song simply because it falls into a different genre. It also assumes our numerical metrics (like `energy`) perfectly capture a user's intent, which isn't always true in the real world. Ensure you experiment with these weights when fine-tuning the system!
+This algorithm heavily prioritizes exact string matches (+1.5 points for detailed mood). As a result, it has a built-in bias toward a user's *stated* metadata. It might ignore a fantastic, perfectly energy-matched song simply because it falls into a different categorical bucket.
 
 **Simulation Output Screenshot:**
 
@@ -48,8 +48,8 @@ This algorithm heavily prioritizes exact genre matches (+2.0 points). As a resul
 Loaded songs: 18
 
 ========== Top recommendations for: High-Energy Pop ==========
-Sunrise City - Score: 4.93
-Because: genre match (+2.0), mood match (+1.0), energy match (+0.97), valence match (+0.96)
+Sunrise City - Score: 10.15
+Because: genre match (+1.0), mood match (+1.0), detailed mood match (+1.5), 2010s era match (+1.0), popularity match (+0.95), vocal match (+0.90), instrumentalness match (+0.90), energy match (+1.94), valence match (+0.96)
 Gym Hero - Score: 3.89
 Because: genre match (+2.0), energy match (+0.92), valence match (+0.97)
 Rooftop Lights - Score: 2.90

@@ -16,14 +16,17 @@ def main() -> None:
     songs = load_songs("data/songs.csv") 
 
     # 1. High-Energy Pop (Standard Profile)
-    profile_1 = {"name": "High-Energy Pop", "genre": "pop", "mood": "happy", "energy": 0.85, "valence": 0.8}
+    profile_1 = {"name": "High-Energy Pop", "genre": "pop", "mood": "happy", "energy": 0.85, "valence": 0.8, 
+                 "detailed_mood": "euphoric", "release_decade": 2010, "target_popularity": 80, "vocal_presence": 0.8, "instrumentalness": 0.1}
     
     # 2. Chill Lofi (Standard Profile)
-    profile_2 = {"name": "Chill Lofi", "genre": "lofi", "mood": "chill", "energy": 0.3, "valence": 0.5}
+    profile_2 = {"name": "Chill Lofi", "genre": "lofi", "mood": "chill", "energy": 0.3, "valence": 0.5,
+                 "detailed_mood": "serene", "release_decade": 2020, "target_popularity": 45, "vocal_presence": 0.1, "instrumentalness": 0.9}
     
     # 3. Adversarial / Edge Case (Conflicting: intense but acoustic/low tempo)
     # Testing what happens when a user asks for heavy metal, but with extremely low energy and high valence.
-    profile_3 = {"name": "Adversarial Metal", "genre": "metal", "mood": "happy", "energy": 0.1, "valence": 0.9}
+    profile_3 = {"name": "Adversarial Metal", "genre": "metal", "mood": "happy", "energy": 0.1, "valence": 0.9,
+                 "detailed_mood": "euphoric", "release_decade": 1980, "target_popularity": 90, "vocal_presence": 0.9, "instrumentalness": 0.2}
 
     profiles = [profile_1, profile_2, profile_3]
 
