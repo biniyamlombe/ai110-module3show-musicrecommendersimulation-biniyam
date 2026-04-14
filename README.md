@@ -47,22 +47,44 @@ This algorithm heavily prioritizes exact genre matches (+2.0 points). As a resul
 ```text
 Loaded songs: 18
 
-Top recommendations:
+========== Top recommendations for: High-Energy Pop ==========
+Sunrise City - Score: 4.93
+Because: genre match (+2.0), mood match (+1.0), energy match (+0.97), valence match (+0.96)
+Gym Hero - Score: 3.89
+Because: genre match (+2.0), energy match (+0.92), valence match (+0.97)
+Rooftop Lights - Score: 2.90
+Because: mood match (+1.0), energy match (+0.91), valence match (+0.99)
+Reggae Vibes - Score: 2.70
+Because: mood match (+1.0), energy match (+0.75), valence match (+0.95)
+Deep House Groove - Score: 1.95
+Because: energy match (+1.00), valence match (+0.95)
+==================================================================
 
-Sunrise City - Score: 3.98
-Because: genre match (+2.0), mood match (+1.0), energy match (+0.98)
+========== Top recommendations for: Chill Lofi ==========
+Library Rain - Score: 4.85
+Because: genre match (+2.0), mood match (+1.0), energy match (+0.95), valence match (+0.90)
+Midnight Coding - Score: 4.82
+Because: genre match (+2.0), mood match (+1.0), energy match (+0.88), valence match (+0.94)
+Focus Flow - Score: 3.81
+Because: genre match (+2.0), energy match (+0.90), valence match (+0.91)
+Spacewalk Thoughts - Score: 2.83
+Because: mood match (+1.0), energy match (+0.98), valence match (+0.85)
+Acoustic Sunset - Score: 2.00
+Because: energy match (+1.00), valence match (+1.00)
+==================================================================
 
-Gym Hero - Score: 2.87
-Because: genre match (+2.0), energy match (+0.87)
-
-Rooftop Lights - Score: 1.96
-Because: mood match (+1.0), energy match (+0.96)
-
-Reggae Vibes - Score: 1.80
-Because: mood match (+1.0), energy match (+0.80)
-
-Deep House Groove - Score: 0.95
-Because: energy match (+0.95)
+========== Top recommendations for: Adversarial Metal ==========
+Reggae Vibes - Score: 2.45
+Because: mood match (+1.0), energy match (+0.50), valence match (+0.95)
+Heavy Metal Nightmare - Score: 2.42
+Because: genre match (+2.0), energy match (+0.12), valence match (+0.30)
+Rooftop Lights - Score: 2.25
+Because: mood match (+1.0), energy match (+0.34), valence match (+0.91)
+Sunrise City - Score: 2.22
+Because: mood match (+1.0), energy match (+0.28), valence match (+0.94)
+Spacewalk Thoughts - Score: 1.57
+Because: energy match (+0.82), valence match (+0.75)
+==================================================================
 ```
 
 ---
