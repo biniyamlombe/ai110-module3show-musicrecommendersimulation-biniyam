@@ -11,6 +11,34 @@ vibe matches and generate the final recommendations.
 
 from src.recommender import load_songs, recommend_songs
 
+def _truncate(text: str, width: int = 60) -> str:
+    if text is None:
+        return ""
+    return (text[: width - 3] + "...") if len(text) > width else text
+
+def print_recommendations_table(recs, title: str = "Recommendations"):
+    """
+    Print recommendations as a table including reasons.
+    Tries to use `tabulate` if installed, otherwise falls back to ASCII formatting.
+    """
+    rows = []
+    for i, (song, score, explanation) in enumerate(recs, start=1):
+        rows.append([i, song.get("title", ""), song.get("artist", ""), f"{score:.2f}", _truncate(explanation, 80)])
+
+    headers = ["#", "Title", "Artist", "Score", "Reasons"]
+    try:
+        from tabulate import tabulate  # optional dependency
+        print(f"\n--- {title} ---")
+        print(tabulate(rows, headers=headers, tablefmt="github"))
+    except Exception:
+        col_widths = [3, 30, 18, 7, 80]
+        fmt = "{:<3}  {:<30}  {:<18}  {:>7}  {:<80}"
+        print(f"\n--- {title} ---")
+        print(fmt.format(*headers))
+        print("-" * (sum(col_widths) + 10))
+        for r in rows:
+            print(fmt.format(r[0], r[1][:30], r[2][:18], r[3], r[4][:80]))
+    print_recommendations_table(recs, title="Recommendations")
 
 def main() -> None:
     songs = load_songs("data/songs.csv") 
@@ -32,11 +60,8 @@ def main() -> None:
 
     for p in profiles:
         print(f"\n========== Top recommendations for: {p['name']} ==========")
-        recommendations = recommend_songs(p, songs, k=5)
-        for rec in recommendations:
-            song, score, explanation = rec
-            print(f"{song['title']} - Score: {score:.2f}")
-            print(f"Because: {explanation}")
+        recommendations = recommend_songs(p, songs, k=5, mode=p.get("mode", "base"))
+        print_recommendations_table(recommendations, title=f"Top for {p['name']}")
         print("==================================================================")
 
 
