@@ -29,7 +29,45 @@ class UserProfile:
     favorite_mood: str
     target_energy: float
     likes_acoustic: bool
+# Strategy pattern (single feature addition)
+class ScoringStrategy:
+    """Minimal strategy interface: score returns (score, reasons)."""
+    def score(self, user: UserProfile, song: Song) -> Tuple[float, List[str]]:
+        raise NotImplementedError
 
+    def explain(self, user: UserProfile, song: Song) -> str:
+        sc, reasons = self.score(user, song)
+        return ", ".join(reasons) if reasons else "No matching vibe found."
+
+class BaseStrategy(ScoringStrategy):
+    """Wrap existing score_song by converting dataclasses to dicts."""
+    def score(self, user: UserProfile, song: Song) -> Tuple[float, List[str]]:
+        # convert UserProfile -> user_prefs dict expected by score_song
+        prefs: Dict = {}
+        if getattr(user, "favorite_genre", None):
+            prefs["genre"] = user.favorite_genre
+        if getattr(user, "favorite_mood", None):
+            prefs["mood"] = user.favorite_mood
+        prefs["energy"] = getattr(user, "target_energy", 0.5)
+        # likes_acoustic is kept for future strategies (not used by score_song currently)
+        prefs["likes_acoustic"] = getattr(user, "likes_acoustic", False)
+
+        # convert Song dataclass to dict in the same shape as load_songs rows
+        song_dict: Dict = song.__dict__.copy()
+        return score_song(prefs, song_dict)
+
+class GenreFirstStrategy(BaseStrategy):
+    """Boost songs that match genre by an additional small bonus."""
+    def __init__(self, bonus: float = 1.5):
+        self.bonus = bonus
+
+    def score(self, user: UserProfile, song: Song) -> Tuple[float, List[str]]:
+        base_score, reasons = super().score(user, song)
+        if user.favorite_genre and song.genre and song.genre.lower() == user.favorite_genre.lower():
+            base_score += self.bonus
+            reasons = reasons + [f"genre first bonus (+{self.bonus:.2f})"]
+        return base_score, reasons
+    
 class Recommender:
     """
     OOP implementation of the recommendation logic.
