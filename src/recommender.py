@@ -83,7 +83,13 @@ class Recommender:
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
         # TODO: Implement recommendation logic
-        return self.songs[:k]
+        # Score each song using the strategy
+        scored : List[Tuple[float, Song]] = []
+        for song in self.songs:
+            score, _ = self.strategy.score(user, song)
+            scored.append((score, song))
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return [song for _, song in scored[:k]]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
         # TODO: Implement explanation logic
