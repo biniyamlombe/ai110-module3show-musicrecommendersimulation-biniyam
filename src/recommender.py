@@ -68,6 +68,18 @@ class GenreFirstStrategy(BaseStrategy):
             reasons = reasons + [f"genre first bonus (+{self.bonus:.2f})"]
         return base_score, reasons
     
+class MoodFirstStrategy(BaseStrategy):
+    """Boost songs that match mood by an additional small bonus."""
+    def __init__(self, bonus: float = 1.5):
+        self.bonus = bonus
+
+    def score(self, user: UserProfile, song: Song) -> Tuple[float, List[str]]:
+        base_score, reasons = super().score(user, song)
+        if user.favorite_mood and song.mood and song.mood.lower() == user.favorite_mood.lower():
+            base_score += self.bonus
+            reasons = reasons + [f"mood first bonus (+{self.bonus:.2f})"]
+        return base_score, reasons
+    
 class Recommender:
     """
     OOP implementation of the recommendation logic.
