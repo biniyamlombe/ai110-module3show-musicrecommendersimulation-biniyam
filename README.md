@@ -54,42 +54,27 @@ This algorithm heavily prioritizes exact string matches (+1.5 points for detaile
 Loaded songs: 18
 
 ========== Top recommendations for: High-Energy Pop ==========
-Sunrise City - Score: 10.15
-Because: genre match (+1.0), mood match (+1.0), detailed mood match (+1.5), 2010s era match (+1.0), popularity match (+0.95), vocal match (+0.90), instrumentalness match (+0.90), energy match (+1.94), valence match (+0.96)
-Gym Hero - Score: 3.89
-Because: genre match (+2.0), energy match (+0.92), valence match (+0.97)
-Rooftop Lights - Score: 2.90
-Because: mood match (+1.0), energy match (+0.91), valence match (+0.99)
-Reggae Vibes - Score: 2.70
-Because: mood match (+1.0), energy match (+0.75), valence match (+0.95)
-Deep House Groove - Score: 1.95
-Because: energy match (+1.00), valence match (+0.95)
+
+--- Top for High-Energy Pop ---
+|   # | Title             | Artist        |   Score | Reasons                                                                          |
+|-----|-------------------|---------------|---------|----------------------------------------------------------------------------------|
+|   1 | Sunrise City      | Neon Echo     |   10.15 | genre match (+1.0), mood match (+1.0), detailed mood match (+1.5), 2010s era ... |
+|   2 | Rooftop Lights    | Indigo Parade |    9.21 | mood match (+1.0), detailed mood match (+1.5), 2010s era match (+1.0), popula... |
+|   3 | Gym Hero          | Max Pulse     |    6.41 | genre match (+1.0), detailed mood match (+1.5), popularity match (+0.90), voc... |
+|   4 | Reggae Vibes      | Island Sound  |    7.50 | mood match (+1.0), detailed mood match (+1.5), popularity match (+0.85), voca... |
+|   5 | Deep House Groove | DJ Orbit      |    7.27 | detailed mood match (+1.5), 2010s era match (+1.0), popularity match (+0.92),... |
 ==================================================================
 
 ========== Top recommendations for: Chill Lofi ==========
-Library Rain - Score: 4.85
-Because: genre match (+2.0), mood match (+1.0), energy match (+0.95), valence match (+0.90)
-Midnight Coding - Score: 4.82
-Because: genre match (+2.0), mood match (+1.0), energy match (+0.88), valence match (+0.94)
-Focus Flow - Score: 3.81
-Because: genre match (+2.0), energy match (+0.90), valence match (+0.91)
-Spacewalk Thoughts - Score: 2.83
-Because: mood match (+1.0), energy match (+0.98), valence match (+0.85)
-Acoustic Sunset - Score: 2.00
-Because: energy match (+1.00), valence match (+1.00)
-==================================================================
 
-========== Top recommendations for: Adversarial Metal ==========
-Reggae Vibes - Score: 2.45
-Because: mood match (+1.0), energy match (+0.50), valence match (+0.95)
-Heavy Metal Nightmare - Score: 2.42
-Because: genre match (+2.0), energy match (+0.12), valence match (+0.30)
-Rooftop Lights - Score: 2.25
-Because: mood match (+1.0), energy match (+0.34), valence match (+0.91)
-Sunrise City - Score: 2.22
-Because: mood match (+1.0), energy match (+0.28), valence match (+0.94)
-Spacewalk Thoughts - Score: 1.57
-Because: energy match (+0.82), valence match (+0.75)
+--- Top for Chill Lofi ---
+|   # | Title              | Artist         |   Score | Reasons                                                                          |
+|-----|--------------------|----------------|---------|----------------------------------------------------------------------------------|
+|   1 | Midnight Coding    | LoRoom         |   10.15 | genre match (+1.0), mood match (+1.0), detailed mood match (+1.5), 2020s era ... |
+|   2 | Focus Flow         | LoRoom         |    5.05 | genre match (+1.0), detailed mood match (+1.5), 2020s era match (+1.0), popul... |
+|   3 | Library Rain       | Paper Lanterns |    5.47 | genre match (+1.0), mood match (+1.0), 2020s era match (+1.0), popularity mat... |
+|   4 | Spacewalk Thoughts | Orbit Bloom    |    7.81 | mood match (+1.0), detailed mood match (+1.5), popularity match (+0.70), voca... |
+|   5 | Classical Study    | String Quartet |    6.85 | detailed mood match (+1.5), popularity match (+0.85), vocal match (+0.90), in... |
 ==================================================================
 ```
 
@@ -139,6 +124,7 @@ Here are the experiments and enhancements recently added to the system:
 - **Strategy Pattern / Recommendation Modes:** Implemented multiple scoring strategies (`GenreFirst`, `MoodFirst`, `EnergyFocused`). Each mode wraps the base score and applies a focused bonus, allowing the recommender to drastically alter the ranked output depending on what signal we prioritize.
 - **Diversity Penalties:** Implemented a greedy selection algorithm that applies multiplicative score penalties for repeat artists and genres to force playlist variety and break up homogeneous "bubbles."
 - **Stress-Tested with Adversarial Profiles:** Tested conflicting input profiles (like an "Adversarial Metal" fan requesting low energy and high valence). This exposed how strict numerical filtering can unintentionally filter out contextually relevant art based purely on math restrictions.
+- **Enhanced CLI Output:** Integrated the `tabulate` library to dynamically generate beautiful, readable ASCII tables for the terminal output, ensuring reasons and scores are cleanly aligned and truncated.
 
 ---
 
