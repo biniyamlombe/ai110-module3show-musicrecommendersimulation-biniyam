@@ -98,7 +98,9 @@ class EnergyFocusedStrategy(BaseStrategy):
 class Recommender:
     """
     OOP implementation of the recommendation logic.
-    Required by tests/test_recommender.py
+    Supports injecting different ScoringStrategy implementations (like GenreFirst, 
+    MoodFirst, EnergyFocused) via the `mode` parameter to dynamically alter 
+    scoring and ranking behavior.
     """
     def __init__(self, songs: List[Song], mode: str = "base"):
         self.songs = songs
@@ -130,8 +132,8 @@ class Recommender:
 
 def load_songs(csv_path: str) -> List[Dict]:
     """
-    Loads songs from a CSV file.
-    Required by src/main.py
+    Loads songs from a CSV file, casting numerical strings into floats and ints.
+    Provides the data source for our Content-Based recommender.
     """
     songs = []
     with open(csv_path, mode='r', encoding='utf-8') as f:
@@ -206,7 +208,9 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5, mode: str = "base") -> List[Tuple[Dict, float, str]]:
     """
     Functional implementation of the recommendation logic.
-    Required by src/main.py
+    Scores the entire catalog against user preferences, applies dynamic bonus scoring 
+    based on the selected `mode` (genre_first, mood_first, energy_focused), 
+    and sorts the results to return the top `k` recommendations along with explanations.
     """
     scored_songs = []
     
