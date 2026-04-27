@@ -73,8 +73,13 @@ class Recommender:
     OOP implementation of the recommendation logic.
     Required by tests/test_recommender.py
     """
-    def __init__(self, songs: List[Song]):
+    def __init__(self, songs: List[Song], mode: str = "base"):
         self.songs = songs
+        # select strategy
+        if mode == "genre_first":
+            self.strategy: ScoringStrategy = GenreFirstStrategy()
+        else:
+            self.strategy = BaseStrategy()
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
         # TODO: Implement recommendation logic
