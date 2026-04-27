@@ -105,17 +105,23 @@ class Recommender:
         # select strategy
         if mode == "genre_first":
             self.strategy: ScoringStrategy = GenreFirstStrategy()
+        elif mode == "mood_first":
+            self.strategy = MoodFirstStrategy()
+        elif mode == "energy_focused":
+            self.strategy = EnergyFocusedStrategy()
         else:
             self.strategy = BaseStrategy()
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
         # TODO: Implement recommendation logic
-        # Score each song using the strategy
-        scored : List[Tuple[float, Song]] = []
+        # Score each song using the chosen strategy 
+        # and sort with deterministic tie breaker
+        scored: List[Tuple[float, Song]] = []
         for song in self.songs:
             score, _ = self.strategy.score(user, song)
             scored.append((score, song))
-        scored.sort(key=lambda x: x[0], reverse=True)
+        # sort by (-score, id) so ties are deterministic
+        scored.sort(key=lambda t: (-t[0], t[1].id))
         return [song for _, song in scored[:k]]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
