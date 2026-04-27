@@ -25,9 +25,14 @@ In the real world, music platforms like Spotify or YouTube use a mix of **Collab
 
 **The Algorithm (Scoring & Ranking):**
 1. **Scoring Rule:** The recommender calculates a total score for *each individual song*. 
-   - Categorical traits (`genre`, `mood`, `detailed_mood`, `release_decade`) get heavily weighted bonus points if they match the user exactly (e.g., matching a highly specific `detailed_mood` = +1.5 points).
-   - Numerical traits (`energy`, `valence`, `popularity`, etc.) use a mathematical distance metric: `1.0 - absolute(user_preference - song_attribute)`. The closer the song is to the user's target math, the more points it earns!
-2. **Ranking Rule:** After scoring every song in the catalog, the system sorts them by total score in descending order and recommends the top highest-scoring tracks.
+   - Categorical traits (`genre`, `mood`, `detailed_mood`, `release_decade`) get heavily weighted bonus points if they match the user exactly (e.g., matching a highly specific `detailed_mood` = +1.5 points). In our latest experiment, genre match weight was adjusted to +1.0.
+   - Numerical traits (`energy`, `valence`, `popularity`, etc.) use a mathematical distance metric: `1.0 - absolute(user_preference - song_attribute)`. The closer the song is to the user's target math, the more points it earns! We've also doubled the weight of the energy score match.
+2. **Recommendation Modes (Strategy Pattern):** We've introduced different recommendation strategies that apply targeted score multipliers or bonuses:
+   - **Base Strategy:** Standard scoring.
+   - **Genre First Strategy:** Awards an extra +1.5 bonus to tracks matching the user's favorite genre.
+   - **Mood First Strategy:** Awards an extra +1.5 bonus to tracks matching the user's favorite mood.
+   - **Energy Focused Strategy:** Awards a proportional bonus (up to +1.5) based on how close the song's energy is to the user's target.
+3. **Ranking Rule:** After scoring every song in the catalog, the system sorts them by total score in descending order and recommends the top highest-scoring tracks. Ties are broken deterministically using the song ID.
 
 **Data Flow Visualization:**
 
@@ -126,11 +131,12 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
+Here are the experiments and enhancements recently added to the system:
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+- **Advanced Song Features:** Extended the baseline catalog with 5 advanced attributes (`popularity`, `release_decade`, `detailed_mood`, `vocal_presence`, and `instrumentalness`). Adding granular tracking data like these allowed the math to create highly robust recommendations that mirror commercial applications.
+- **Scoring Weights adjustments:** Halved the baseline genre weight (from +2.0 to +1.0) and doubled the baseline energy weight. This prevents generic genre tags from entirely overshadowing a track's audio profile.
+- **Strategy Pattern / Recommendation Modes:** Implemented multiple scoring strategies (`GenreFirst`, `MoodFirst`, `EnergyFocused`). Each mode wraps the base score and applies a focused bonus, allowing the recommender to drastically alter the ranked output depending on what signal we prioritize.
+- **Stress-Tested with Adversarial Profiles:** Tested conflicting input profiles (like an "Adversarial Metal" fan requesting low energy and high valence). This exposed how strict numerical filtering can unintentionally filter out contextually relevant art based purely on math restrictions.
 
 ---
 
