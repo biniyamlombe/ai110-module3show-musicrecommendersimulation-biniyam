@@ -18,7 +18,9 @@ The algorithm uses a "Content-Based Filtering" methodology. Rather than looking 
 - A song earns a massive bonus score (+1.0 point) if it hits the exact requested genre or mood string.
 - **Advanced String matching:** A song earns +1.5 points for matching a highly specific `detailed_mood` string and +1.0 for matching the explicit `release_decade`.
 - **Numerical traits** like "energy", "valence", "vocal_presence", "instrumentalness", and "popularity" use a math-based distance calculation. If a user asks for an energy of 0.8 and the song is 0.8, it earns the maximum points. The further away the song's data is from the user's preference, the fewer points it earns.
-Finally, the system ranks all the songs based on total score and returns the top 5!
+- **Recommendation Modes (Strategy Pattern):** The algorithm now supports dynamic scoring strategies. Users can select modes like `GenreFirst`, `MoodFirst`, or `EnergyFocused` to wrap the base score and apply targeted bonus multipliers.
+- **Diversity Penalties:** To prevent "filter bubbling" where a single artist dominates the results, the system employs a greedy selection phase that applies multiplicative penalties (`artist_penalty`, `genre_penalty`) to repeating artists and genres, optionally enforcing hard caps.
+Finally, the system ranks all the songs based on their adjusted score and returns the top 5!
 
 ---
 
@@ -54,7 +56,7 @@ When comparing the Pop profile vs the Lofi profile, the outputs behaved exactly 
 If I were to continue developing this:
 1. I would add a "Strict Filter" override, so a user could say "ONLY show me Rock music", turning genre into a binary pass/fail rather than just a weighted point bonus.
 2. I would dramatically increase the dataset size so that users aren't recommended irrelevant music simply because the catalog ran out of options.
-3. I would balance diversity, purposefully inserting 1 wildcard song into the top 5 just to help users discover new music.
+3. I would add social "Collaborative Filtering" elements so the system could recommend a song simply because a friend liked it, overriding the strict audio math entirely.
 
 ---
 
