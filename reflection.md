@@ -19,3 +19,7 @@ I implemented a simple Strategy pattern and three ranking modes: genre first, mo
 ## Challenge 3: Diversity Penalties
 
 I realized that sorting purely by mathematical scores resulted in extremely homogeneous playlists—sometimes surfacing 5 songs by the exact same artist! I introduced a greedy selection phase that applies multiplicative penalties (`artist_penalty` and `genre_penalty`) to tracks sharing an artist or genre with previously selected tracks. This brilliantly forced the algorithm to dig deeper into the catalog, providing a much more realistic and diverse user experience without abandoning the core scoring logic.
+
+## Challenge 4: Interactive UX and Reinforcement Feedback
+
+To elevate the project from a background script to a production-ready simulation, I added two major user experience upgrades: an interactive CLI (which can export to CSV) and a reactive **Streamlit** web dashboard. Crucially, I implemented a "Like/Dislike" feedback loop. By mathematically blending the audio features of a "liked" track with the user's initial target preferences, the model immediately re-sorts the catalog. Experiencing this real-time "learning" was a massive breakthrough in understanding how commercial recommenders actively manipulate your taste profile to keep you engaged.

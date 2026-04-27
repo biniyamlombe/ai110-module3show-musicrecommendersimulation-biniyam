@@ -97,13 +97,20 @@ Loaded songs: 18
 pip install -r requirements.txt
 ```
 
-3. Run the app:
+3. Run the CLI app:
 
 ```bash
 python -m src.main
 ```
 
-The script will prompt you to enter **Interactive Mode**. If you type `y`, you can answer a short questionnaire to dynamically build your custom taste profile on the fly! Otherwise, it will print recommendations for three standard simulated profiles.
+The script will prompt you to enter **Interactive Mode**. If you type `y`, you can answer a short questionnaire to dynamically build your custom taste profile on the fly! You can also provide feedback on the recommendations (triggering a reinforcement loop) and choose to save the final playlist to a CSV in the `outputs/` folder.
+
+4. Run the Web Dashboard:
+
+```bash
+streamlit run src/app.py
+```
+This launches a beautiful, reactive web UI in your browser where you can tweak sliders and instantly see your playlist update!
 
 ### Running Tests
 
@@ -126,8 +133,10 @@ Here are the experiments and enhancements recently added to the system:
 - **Strategy Pattern / Recommendation Modes:** Implemented multiple scoring strategies (`GenreFirst`, `MoodFirst`, `EnergyFocused`). Each mode wraps the base score and applies a focused bonus, allowing the recommender to drastically alter the ranked output depending on what signal we prioritize.
 - **Diversity Penalties:** Implemented a greedy selection algorithm that applies multiplicative score penalties for repeat artists and genres to force playlist variety and break up homogeneous "bubbles."
 - **Stress-Tested with Adversarial Profiles:** Tested conflicting input profiles (like an "Adversarial Metal" fan requesting low energy and high valence). This exposed how strict numerical filtering can unintentionally filter out contextually relevant art based purely on math restrictions.
-- **Enhanced CLI Output:** Integrated the `tabulate` library to dynamically generate beautiful, readable ASCII tables for the terminal output, ensuring reasons and scores are cleanly aligned and truncated.
-- **Interactive Terminal Questionnaire:** Added an interactive CLI prompt to `src/main.py` that asks users for their name, preferred genre, mood, and scaled numeric preferences (1-10) to generate a custom Taste Profile on the fly.
+- **"Like/Dislike" Feedback Loop:** Implemented a reinforcement-style feedback loop where users can "like" a recommended track, causing the algorithm to blend the user's profile with the track's audio features and instantly regenerate the playlist.
+- **Dynamic Weighting ("Picky Listener"):** Upgraded the scoring engine to accept dynamic multipliers, allowing users to configure the algorithm's strictness (e.g., heavily weighting Genre over Energy, or vice-versa).
+- **Export Playlist to CSV:** Built an exporter that dumps the generated playlist, exact scores, and calculation reasons into a timestamped CSV file in a local `outputs/` folder.
+- **Streamlit Web Dashboard:** Built a full frontend UI (`src/app.py`) that wraps the recommender logic, allowing real-time, slider-based interaction with the algorithm for an amazing visual user experience.
 
 ---
 
