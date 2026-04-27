@@ -203,28 +203,46 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
     return score, reasons
 
-def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
+def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5, mode: str = "base") -> List[Tuple[Dict, float, str]]:
     """
     Functional implementation of the recommendation logic.
     Required by src/main.py
     """
     scored_songs = []
     
-    # Loop over every song in the catalog
+# Loop over every song in the catalog
     for song in songs:
-        # 1. Use the judge to calculate score
+        # 1. Use the judge to calculate base score
         score, reasons = score_song(user_prefs, song)
         
-        # 2. Format the reasons list into a single readable string
+        # 2. Apply mode-specific bonus and annotate reasons
+        if mode == "genre_first":
+            if 'genre' in user_prefs and user_prefs.get('genre') and song.get('genre') and song['genre'].lower() == user_prefs['genre'].lower():
+                bonus = 1.5
+                score += bonus
+                reasons.append(f"genre-first bonus (+{bonus:.2f})")
+        elif mode == "mood_first":
+            if 'mood' in user_prefs and user_prefs.get('mood') and song.get('mood') and song['mood'].lower() == user_prefs['mood'].lower():
+                bonus = 1.5
+                score += bonus
+                reasons.append(f"mood-first bonus (+{bonus:.2f})")
+        elif mode == "energy_focused":
+            user_energy = float(user_prefs.get('energy', 0.5))
+            song_energy = float(song.get('energy', 0.5))
+            energy_sim = max(0.0, 1.0 - abs(user_energy - song_energy))
+            if energy_sim > 0.0:
+                bonus = 1.5 * energy_sim
+                score += bonus
+                reasons.append(f"energy-focus bonus (+{bonus:.2f})")
+        
+        # 3. Format the reasons list into a single readable string
         explanation = ", ".join(reasons) if reasons else "No matching vibe found."
         
-        # 3. Store the result
-        scored_songs.append((song, score, explanation))
+        # 4. Store the result
+        scored_songs.append((song, float(score), explanation))
         
-    # Pythonic sorting: list.sort() sorts the list in-place.
-    # We use a lambda function to tell it to sort by index [1] (which is the score).
-    # `reverse=True` puts the highest scores at the top.
-    scored_songs.sort(key=lambda item: item[1], reverse=True)
+    # Sort by score descending, deterministic tie-breaker by id
+    scored_songs.sort(key=lambda item: (-item[1], int(item[0].get("id", 0))))
     
     # Return the top k elements slice
     return scored_songs[:k]
