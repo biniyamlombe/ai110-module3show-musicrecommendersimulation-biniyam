@@ -10,3 +10,8 @@ To explain this simply: "Gym Hero" keeps showing up at the top of the list for H
 
 ## Challenge 1: Advanced Song Features
 I extended the baseline dataset by adding 5 advanced complex attributes: `popularity`, `release_decade`, `detailed_mood`, `vocal_presence`, and `instrumentalness`. By programming custom weighting matrices for these (such as assigning a flat +1.5 bonus for a perfect `detailed_mood` match rather than a basic mood match), the algorithm became dramatically more precise. I learned that adding granular tracking data allows the math to create highly robust recommendations that begin to mirror the complexity of a fully commercial application.
+
+
+## Challenge 2: Multiple Scoring Modes
+
+I implemented a simple Strategy pattern and three ranking modes: genre first, mood-first, and energy focused. Each mode wraps the base score and applies a small bonus that emphasizes one primary signal. This allowed quick experiments showing how weighting changes reorder recommendations and exposed tie breaker behavior. Unit tests were added to verify mode specific effects (ordering, score validity, and explanation contents).
