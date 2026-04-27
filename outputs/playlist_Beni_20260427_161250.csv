@@ -1,0 +1,6 @@
+Rank,Title,Artist,Score,Reasons
+1,Storm Runner,Voltline,6.21,"genre match (+5.0), energy match (+0.40), valence match (+0.81)"
+2,Moody Trap,Bass Heavens,1.39,"energy match (+0.50), valence match (+0.89)"
+3,Cyberpunk Battle,Neon Echo,1.37,"energy match (+0.38), valence match (+0.99)"
+4,Night Drive Loop,Neon Echo,0.89,"energy match (+0.48), valence match (+0.80) | diversity penalty: artist repeat x1 (×0.70^1)"
+5,Heavy Metal Nightmare,Iron Skulls,1.27,"energy match (+0.36), valence match (+0.91)"
