@@ -9,6 +9,10 @@ It relies on functions and OOP classes from `recommender.py` to calculate
 vibe matches and generate the final recommendations.
 """
 
+import os
+import csv
+from datetime import datetime
+
 from src.recommender import load_songs, recommend_songs
 
 def _truncate(text: str, width: int = 60) -> str:
@@ -98,6 +102,21 @@ def interactive_mode(songs):
             # Re-generate recommendations with adjusted math
             new_recommendations = recommend_songs(user_profile, songs, k=5)
             print_recommendations_table(new_recommendations, title=f"Updated Top for {name} (Learned from feedback!)")
+            recommendations = new_recommendations
+
+    save = input("\nWould you like to save this playlist to a CSV? (y/n): ").strip().lower()
+    if save == 'y':
+        os.makedirs("outputs", exist_ok=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"outputs/playlist_{name.replace(' ', '_')}_{timestamp}.csv"
+        
+        with open(filename, mode='w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(["Rank", "Title", "Artist", "Score", "Reasons"])
+            for i, (song, score, explanation) in enumerate(recommendations, start=1):
+                writer.writerow([i, song.get('title', ''), song.get('artist', ''), f"{score:.2f}", explanation])
+        
+        print(f"Playlist successfully saved to {filename}!")
 
 
 def main() -> None:
