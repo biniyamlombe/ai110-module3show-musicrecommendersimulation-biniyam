@@ -114,17 +114,41 @@ class Recommender:
         else:
             self.strategy = BaseStrategy()
 
-    def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
-        # TODO: Implement recommendation logic
-        # Score each song using the chosen strategy 
-        # and sort with deterministic tie breaker
+    def recommend(self, user: UserProfile, k: int = 5,
+                  artist_penalty: float = 0.7, genre_penalty: float = 0.8,
+                  max_per_artist: Optional[int] = None, max_per_genre: Optional[int] = None) -> List[Song]:
+        # compute base scores using strategy
         scored: List[Tuple[float, Song]] = []
         for song in self.songs:
-            score, _ = self.strategy.score(user, song)
-            scored.append((score, song))
-        # sort by (-score, id) so ties are deterministic
+            base_score, _ = self.strategy.score(user, song)
+            scored.append((float(base_score), song))
         scored.sort(key=lambda t: (-t[0], t[1].id))
-        return [song for _, song in scored[:k]]
+
+        # greedy selection with diversity penalties
+        selected: List[Song] = []
+        artist_counts: Dict[str, int] = {}
+        genre_counts: Dict[str, int] = {}
+
+        for base_score, song in scored:
+            if len(selected) >= k:
+                break
+            artist = (song.artist or "").strip().lower()
+            genre = (song.genre or "").strip().lower()
+            a_count = artist_counts.get(artist, 0)
+            g_count = genre_counts.get(genre, 0)
+
+            if max_per_artist is not None and a_count >= max_per_artist:
+                continue
+            if max_per_genre is not None and g_count >= max_per_genre:
+                continue
+
+            adj_score = base_score * (artist_penalty ** a_count) * (genre_penalty ** g_count)
+
+            selected.append(song)
+            artist_counts[artist] = a_count + 1
+            genre_counts[genre] = g_count + 1
+
+        return selected
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
         # TODO: Implement explanation logic
