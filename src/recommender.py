@@ -229,48 +229,58 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
     return score, reasons
 
-def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5, mode: str = "base") -> List[Tuple[Dict, float, str]]:
+def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5, mode: str = "base",
+                    artist_penalty: float = 0.7, genre_penalty: float = 0.8,
+                    max_per_artist: Optional[int] = None, max_per_genre: Optional[int] = None) -> List[Tuple[Dict, float, str]]:
     """
     Functional implementation of the recommendation logic.
     Scores the entire catalog against user preferences, applies dynamic bonus scoring 
     based on the selected `mode` (genre_first, mood_first, energy_focused), 
     and sorts the results to return the top `k` recommendations along with explanations.
     """
-    scored_songs = []
+    scored_songs: List[Tuple[Dict, float, str]] = []
     
 # Loop over every song in the catalog
     for song in songs:
         # 1. Use the judge to calculate base score
         score, reasons = score_song(user_prefs, song)
-        
-        # 2. Apply mode-specific bonus and annotate reasons
-        if mode == "genre_first":
-            if 'genre' in user_prefs and user_prefs.get('genre') and song.get('genre') and song['genre'].lower() == user_prefs['genre'].lower():
-                bonus = 1.5
-                score += bonus
-                reasons.append(f"genre-first bonus (+{bonus:.2f})")
-        elif mode == "mood_first":
-            if 'mood' in user_prefs and user_prefs.get('mood') and song.get('mood') and song['mood'].lower() == user_prefs['mood'].lower():
-                bonus = 1.5
-                score += bonus
-                reasons.append(f"mood-first bonus (+{bonus:.2f})")
-        elif mode == "energy_focused":
-            user_energy = float(user_prefs.get('energy', 0.5))
-            song_energy = float(song.get('energy', 0.5))
-            energy_sim = max(0.0, 1.0 - abs(user_energy - song_energy))
-            if energy_sim > 0.0:
-                bonus = 1.5 * energy_sim
-                score += bonus
-                reasons.append(f"energy-focus bonus (+{bonus:.2f})")
-        
-        # 3. Format the reasons list into a single readable string
+
         explanation = ", ".join(reasons) if reasons else "No matching vibe found."
-        
-        # 4. Store the result
         scored_songs.append((song, float(score), explanation))
-        
-    # Sort by score descending, deterministic tie-breaker by id
+
+    # 2) sort by base score desc, deterministic tie-breaker
     scored_songs.sort(key=lambda item: (-item[1], int(item[0].get("id", 0))))
-    
-    # Return the top k elements slice
-    return scored_songs[:k]
+
+    # 3) greedy selection applying multiplicative diversity penalties
+    selected: List[Tuple[Dict, float, str]] = []
+    artist_counts: Dict[str, int] = {}
+    genre_counts: Dict[str, int] = {}
+
+    for song, base_score, explanation in scored_songs:
+        if len(selected) >= k:
+            break
+        artist = (song.get("artist") or "").strip().lower()
+        genre = (song.get("genre") or "").strip().lower()
+        a_count = artist_counts.get(artist, 0)
+        g_count = genre_counts.get(genre, 0)
+
+        if max_per_artist is not None and a_count >= max_per_artist:
+            continue
+        if max_per_genre is not None and g_count >= max_per_genre:
+            continue
+
+        adj_score = base_score * (artist_penalty ** a_count) * (genre_penalty ** g_count)
+
+        if a_count > 0 or g_count > 0:
+            parts = []
+            if a_count > 0:
+                parts.append(f"artist repeat x{a_count} (×{artist_penalty:.2f}^{a_count})")
+            if g_count > 0:
+                parts.append(f"genre repeat x{g_count} (×{genre_penalty:.2f}^{g_count})")
+            explanation = explanation + " | diversity penalty: " + "; ".join(parts)
+
+        selected.append((song, float(adj_score), explanation))
+        artist_counts[artist] = a_count + 1
+        genre_counts[genre] = g_count + 1
+
+    return selected
