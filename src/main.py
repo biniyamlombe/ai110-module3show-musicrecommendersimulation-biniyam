@@ -1,12 +1,12 @@
 """
 Command line runner for the Music Recommender Simulation.
 
-This file helps you quickly run and test your recommender.
+This file helps you quickly run and test your recommender by defining 
+several simulated user taste profiles (like High-Energy Pop, Chill Lofi, 
+and an Adversarial Edge Case) and evaluating them against the songs catalog.
 
-You will implement the functions in recommender.py:
-- load_songs
-- score_song
-- recommend_songs
+It relies on functions and OOP classes from `recommender.py` to calculate
+vibe matches and generate the final recommendations.
 """
 
 from src.recommender import load_songs, recommend_songs
