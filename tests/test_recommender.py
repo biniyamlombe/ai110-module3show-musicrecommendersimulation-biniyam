@@ -94,3 +94,24 @@ def test_explanation_contains_mode_hint():
     scored = recommend_songs(user, SONGS, k=1, mode="genre_first")
     explanation = scored[0][2]
     assert "genre-first" in explanation or "genre" in explanation
+
+def test_max_per_artist_limit():
+    songs = [
+        {"id": 1, "title": "A1", "artist": "Same", "genre": "pop", "mood": "happy", "energy": 0.8, "tempo_bpm":120, "valence":0.8, "danceability":0.7, "acousticness":0.2, "popularity":50, "release_decade":2010, "detailed_mood":"euphoric", "vocal_presence":0.8, "instrumentalness":0.1},
+        {"id": 2, "title": "A2", "artist": "Same", "genre": "pop", "mood": "happy", "energy": 0.79, "tempo_bpm":118, "valence":0.8, "danceability":0.7, "acousticness":0.2, "popularity":48, "release_decade":2010, "detailed_mood":"euphoric", "vocal_presence":0.8, "instrumentalness":0.1},
+        {"id": 3, "title": "B1", "artist": "Other", "genre": "pop", "mood": "happy", "energy": 0.78, "tempo_bpm":117, "valence":0.79, "danceability":0.7, "acousticness":0.2, "popularity":46, "release_decade":2010, "detailed_mood":"euphoric", "vocal_presence":0.8, "instrumentalness":0.1},
+    ]
+    user = {"genre":"pop", "mood":"happy", "energy":0.8}
+    recs = recommend_songs(user, songs, k=2, mode="base", max_per_artist=1)
+    artists = [r[0]["artist"].lower() for r in recs]
+    assert artists.count("same") <= 1
+
+def test_diversity_penalty_appends_explanation():
+    songs = [
+        {"id": 1, "title": "A1", "artist": "Same", "genre": "pop", "mood": "happy", "energy": 0.8, "tempo_bpm":120, "valence":0.8, "danceability":0.7, "acousticness":0.2, "popularity":50, "release_decade":2010, "detailed_mood":"euphoric", "vocal_presence":0.8, "instrumentalness":0.1},
+        {"id": 2, "title": "A2", "artist": "Same", "genre": "pop", "mood": "happy", "energy": 0.79, "tempo_bpm":118, "valence":0.8, "danceability":0.7, "acousticness":0.2, "popularity":48, "release_decade":2010, "detailed_mood":"euphoric", "vocal_presence":0.8, "instrumentalness":0.1},
+    ]
+    user = {"genre":"pop", "mood":"happy", "energy":0.8}
+    recs = recommend_songs(user, songs, k=2, mode="base", artist_penalty=0.5)
+    # the second selected song should carry a diversity penalty note
+    assert any("diversity penalty" in r[2].lower() for r in recs)
