@@ -15,3 +15,7 @@ I extended the baseline dataset by adding 5 advanced complex attributes: `popula
 ## Challenge 2: Multiple Scoring Modes
 
 I implemented a simple Strategy pattern and three ranking modes: genre first, mood-first, and energy focused. Each mode wraps the base score and applies a small bonus that emphasizes one primary signal. This allowed quick experiments showing how weighting changes reorder recommendations and exposed tie breaker behavior. Unit tests were added to verify mode specific effects (ordering, score validity, and explanation contents).
+
+## Challenge 3: Diversity Penalties
+
+I realized that sorting purely by mathematical scores resulted in extremely homogeneous playlists—sometimes surfacing 5 songs by the exact same artist! I introduced a greedy selection phase that applies multiplicative penalties (`artist_penalty` and `genre_penalty`) to tracks sharing an artist or genre with previously selected tracks. This brilliantly forced the algorithm to dig deeper into the catalog, providing a much more realistic and diverse user experience without abandoning the core scoring logic.
