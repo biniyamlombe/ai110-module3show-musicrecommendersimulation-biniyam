@@ -80,6 +80,21 @@ class MoodFirstStrategy(BaseStrategy):
             reasons = reasons + [f"mood first bonus (+{self.bonus:.2f})"]
         return base_score, reasons
     
+class EnergyFocusedStrategy(BaseStrategy):
+    """Boost songs whose energy is close to the user's target by an additional proportional bonus."""
+    def __init__(self, bonus_multiplier: float = 1.5):
+        self.bonus_multiplier = bonus_multiplier
+
+    def score(self, user: UserProfile, song: Song) -> Tuple[float, List[str]]:
+        base_score, reasons = super().score(user, song)
+        # energy similarity in [0,1]
+        energy_sim = max(0.0, 1.0 - abs(getattr(user, "target_energy", 0.5) - getattr(song, "energy", 0.5)))
+        if energy_sim > 0.0:
+            bonus = energy_sim * self.bonus_multiplier
+            base_score += bonus
+            reasons = reasons + [f"energy focus bonus (+{bonus:.2f})"]
+        return base_score, reasons
+    
 class Recommender:
     """
     OOP implementation of the recommendation logic.
