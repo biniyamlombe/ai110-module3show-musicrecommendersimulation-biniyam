@@ -93,7 +93,7 @@ class Recommender:
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
         # TODO: Implement explanation logic
-        return "Explanation placeholder"
+        return self.strategy.explain(user, song)
 
 def load_songs(csv_path: str) -> List[Dict]:
     """
