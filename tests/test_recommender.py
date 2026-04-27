@@ -1,3 +1,10 @@
+"""
+Unit tests for the Music Recommender Simulation.
+Tests evaluate both the OOP (Recommender) and Functional (recommend_songs) 
+implementations, verifying base scoring logic, deterministic tie-breaking, 
+and the effects of different ScoringStrategy modes (e.g. genre_first, energy_focused).
+"""
+
 from src.recommender import Song, UserProfile, Recommender, recommend_songs
 
 def make_small_recommender() -> Recommender:
