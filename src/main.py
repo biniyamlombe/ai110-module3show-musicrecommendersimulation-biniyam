@@ -39,8 +39,50 @@ def print_recommendations_table(recs, title: str = "Recommendations"):
         for r in rows:
             print(fmt.format(r[0], r[1][:30], r[2][:18], r[3], r[4][:80]))
 
+def interactive_mode(songs):
+    print("\n" + "="*50)
+    print("Welcome to VibeFinder Interactive Mode!")
+    print("Let's build your custom taste profile.")
+    print("="*50)
+    
+    name = input("What's your name? ").strip() or "Guest"
+    genre = input("What genre are you feeling? (e.g., pop, lofi, metal, rock): ").strip().lower()
+    mood = input("What mood are you in? (e.g., happy, chill, sad, energetic): ").strip().lower()
+    
+    try:
+        energy_input = float(input("How much energy do you want? (1-10): "))
+        energy = min(max(energy_input / 10.0, 0.0), 1.0)
+    except ValueError:
+        energy = 0.5
+        
+    try:
+        valence_input = float(input("How happy/positive should it be? (1-10): "))
+        valence = min(max(valence_input / 10.0, 0.0), 1.0)
+    except ValueError:
+        valence = 0.5
+        
+    user_profile = {
+        "name": name,
+        "genre": genre,
+        "mood": mood,
+        "energy": energy,
+        "valence": valence
+    }
+    
+    print(f"\nAwesome, {name}! Generating recommendations...")
+    recommendations = recommend_songs(user_profile, songs, k=5)
+    print_recommendations_table(recommendations, title=f"Top for {name}")
+
+
 def main() -> None:
     songs = load_songs("data/songs.csv") 
+
+    print("\n--- VibeFinder Simulation ---")
+    choice = input("Would you like to try Interactive Mode? (y/n): ").strip().lower()
+    if choice == 'y':
+        interactive_mode(songs)
+        return
+
 
     # 1. High-Energy Pop (Standard Profile)
     profile_1 = {"name": "High-Energy Pop", "genre": "pop", "mood": "happy", "energy": 0.85, "valence": 0.8, 
