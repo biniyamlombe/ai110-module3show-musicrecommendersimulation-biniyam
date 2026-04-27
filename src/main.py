@@ -61,12 +61,24 @@ def interactive_mode(songs):
     except ValueError:
         valence = 0.5
         
+    priority = input("What do you care about most? (1) Exact Genre, or (2) Exact Energy?: ").strip()
+    weight_genre = 1.0
+    weight_energy = 2.0
+    if priority == "1":
+        weight_genre = 5.0
+        weight_energy = 0.5
+    elif priority == "2":
+        weight_genre = 0.0
+        weight_energy = 5.0
+
     user_profile = {
         "name": name,
         "genre": genre,
         "mood": mood,
         "energy": energy,
-        "valence": valence
+        "valence": valence,
+        "weight_genre": weight_genre,
+        "weight_energy": weight_energy
     }
     
     print(f"\nAwesome, {name}! Generating recommendations...")
