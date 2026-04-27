@@ -32,7 +32,8 @@ In the real world, music platforms like Spotify or YouTube use a mix of **Collab
    - **Genre First Strategy:** Awards an extra +1.5 bonus to tracks matching the user's favorite genre.
    - **Mood First Strategy:** Awards an extra +1.5 bonus to tracks matching the user's favorite mood.
    - **Energy Focused Strategy:** Awards a proportional bonus (up to +1.5) based on how close the song's energy is to the user's target.
-3. **Ranking Rule:** After scoring every song in the catalog, the system sorts them by total score in descending order and recommends the top highest-scoring tracks. Ties are broken deterministically using the song ID.
+3. **Diversity Penalties (Anti-Monotony):** To prevent playlists from being dominated by a single artist or genre, a greedy selection algorithm applies multiplicative penalties (`artist_penalty` and `genre_penalty`) to tracks from an artist/genre that has already been selected. It also supports hard caps (`max_per_artist`, `max_per_genre`).
+4. **Ranking Rule:** After scoring and penalizing, the system sorts them by their adjusted scores in descending order and recommends the top tracks. Ties are broken deterministically using the song ID.
 
 **Data Flow Visualization:**
 
@@ -136,6 +137,7 @@ Here are the experiments and enhancements recently added to the system:
 - **Advanced Song Features:** Extended the baseline catalog with 5 advanced attributes (`popularity`, `release_decade`, `detailed_mood`, `vocal_presence`, and `instrumentalness`). Adding granular tracking data like these allowed the math to create highly robust recommendations that mirror commercial applications.
 - **Scoring Weights adjustments:** Halved the baseline genre weight (from +2.0 to +1.0) and doubled the baseline energy weight. This prevents generic genre tags from entirely overshadowing a track's audio profile.
 - **Strategy Pattern / Recommendation Modes:** Implemented multiple scoring strategies (`GenreFirst`, `MoodFirst`, `EnergyFocused`). Each mode wraps the base score and applies a focused bonus, allowing the recommender to drastically alter the ranked output depending on what signal we prioritize.
+- **Diversity Penalties:** Implemented a greedy selection algorithm that applies multiplicative score penalties for repeat artists and genres to force playlist variety and break up homogeneous "bubbles."
 - **Stress-Tested with Adversarial Profiles:** Tested conflicting input profiles (like an "Adversarial Metal" fan requesting low energy and high valence). This exposed how strict numerical filtering can unintentionally filter out contextually relevant art based purely on math restrictions.
 
 ---
