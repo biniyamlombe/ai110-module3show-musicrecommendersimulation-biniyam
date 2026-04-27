@@ -73,6 +73,20 @@ def interactive_mode(songs):
     recommendations = recommend_songs(user_profile, songs, k=5)
     print_recommendations_table(recommendations, title=f"Top for {name}")
 
+    if recommendations:
+        top_song = recommendations[0][0]
+        like = input(f"\nDid you like the #1 song '{top_song.get('title')}'? (y/n): ").strip().lower()
+        if like == 'y':
+            print("\nAwesome! Learning from your feedback... tweaking your profile.")
+            # Shift the user's energy and valence closer to the song's properties (blend 50/50)
+            user_profile["energy"] = (user_profile["energy"] + float(top_song.get("energy", user_profile["energy"]))) / 2.0
+            if "valence" in top_song:
+                user_profile["valence"] = (user_profile["valence"] + float(top_song["valence"])) / 2.0
+            
+            # Re-generate recommendations with adjusted math
+            new_recommendations = recommend_songs(user_profile, songs, k=5)
+            print_recommendations_table(new_recommendations, title=f"Updated Top for {name} (Learned from feedback!)")
+
 
 def main() -> None:
     songs = load_songs("data/songs.csv") 
