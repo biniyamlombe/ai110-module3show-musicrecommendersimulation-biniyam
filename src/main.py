@@ -38,7 +38,6 @@ def print_recommendations_table(recs, title: str = "Recommendations"):
         print("-" * (sum(col_widths) + 10))
         for r in rows:
             print(fmt.format(r[0], r[1][:30], r[2][:18], r[3], r[4][:80]))
-    print_recommendations_table(recs, title="Recommendations")
 
 def main() -> None:
     songs = load_songs("data/songs.csv") 
